@@ -33,7 +33,7 @@ jobs:
 
     - name: Build Go
       run: |
-        GOOS=${{ matrix.goos }} GOARCH=amd64 go build -o TestRelease_${{ matrix.goos }}
+        GOOS=${{ matrix.goos }} GOARCH=amd64 go build
         ls -al
 
     - name: Upload Artifacts
