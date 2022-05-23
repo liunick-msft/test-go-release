@@ -32,7 +32,15 @@ jobs:
 
     - name: Build Go
       run: |
-        GOOS=${{ matrix.goos }} GOARCH=amd64 go build -o ./output/
+      cd ./src
+      sudo apt install libpcap-dev -y
+      go mod tidy
+      GOOS=${{ matrix.goos }} GOARCH=amd64 go build -o ./output/
+
+    - name: Test Go
+      run: |
+      ls -al
+      go test -v
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
