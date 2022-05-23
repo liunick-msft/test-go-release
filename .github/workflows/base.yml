@@ -14,7 +14,8 @@ jobs:
       ## this will contain a matrix of all of the combinations
       ## we wish to test again:
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        # platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest]
         go-version: [1.18]
 
     runs-on: ${{ matrix.platform }}
@@ -31,5 +32,6 @@ jobs:
 
     - name: Build Go
       run: |
-        go build -v ./...
+        GOOS=linux GOARCH=amd64 go build -o TestRelease_linux
+        GOOS=windows GOARCH=amd64 go build -o TestRelease_windows
         ls -al
