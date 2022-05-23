@@ -30,10 +30,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Install PCAP Compiler
+      run: sudo apt install libpcap-dev -y
+
     - name: Build Go
       run: |
         cd ./src
-        sudo apt install libpcap-dev -y
         go mod tidy
         GOOS=${{ matrix.goos }} GOARCH=amd64 go build -o ./output/
 
