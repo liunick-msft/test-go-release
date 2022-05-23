@@ -17,6 +17,7 @@ jobs:
         # platform: [ubuntu-latest, macos-latest, windows-latest]
         platform: [ubuntu-latest]
         go-version: [1.18]
+        goos: [linux, windows]
 
     runs-on: ${{ matrix.platform }}
 
@@ -32,12 +33,11 @@ jobs:
 
     - name: Build Go
       run: |
-        GOOS=linux GOARCH=amd64 go build -o TestRelease_linux
-        GOOS=windows GOARCH=amd64 go build -o TestRelease_windows
+        GOOS=${{ matrix.goos }} GOARCH=amd64 go build -o TestRelease_${{ matrix.goos }}
         ls -al
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: TestRelease_linux
-        path: TestRelease_linux
+        name: TestRelease_${{ matrix.goos }}
+        path: TestRelease_${{ matrix.goos }}
