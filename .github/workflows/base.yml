@@ -35,3 +35,9 @@ jobs:
         GOOS=linux GOARCH=amd64 go build -o TestRelease_linux
         GOOS=windows GOARCH=amd64 go build -o TestRelease_windows
         ls -al
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestRelease_linux
+        path: TestRelease_linux
