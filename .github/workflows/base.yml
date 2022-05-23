@@ -37,7 +37,8 @@ jobs:
       run: |
         cd ./src
         go mod tidy
-        GOOS=${{ matrix.goos }} GOARCH=amd64 go build -o ./output/
+        GOOS=${{ matrix.goos }} GOARCH=amd64 go build -o ./${{ matrix.goos }}/
+        cp input.ini ./${{ matrix.goos }}/
 
     - name: Test Go
       run: |
@@ -49,4 +50,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: TestRelease_${{ matrix.goos }}
-        path: ./src/output/
+        path: ./src/${{ matrix.goos }}/
