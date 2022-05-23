@@ -41,6 +41,7 @@ jobs:
 
     - name: Test Go
       run: |
+        cd ./src
         ls -al
         go test -v
 
@@ -48,4 +49,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: TestRelease_${{ matrix.goos }}
-        path: ./output/
+        path: ./src/output/
