@@ -1,0 +1,89 @@
+name: Release
+
+on:
+  push:
+    branches: [ release ]
+  pull_request:
+    branches: [ release ]
+
+jobs:
+
+  build-project:
+
+    strategy:
+      matrix:
+        # platform: [ubuntu-latest, macos-latest, windows-latest]
+        go-version: [1.18]
+        goos: [linux, windows]
+
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go-version }}
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install PCAP Compiler
+      run: sudo apt install libpcap-dev -y
+
+    - name: Build Go
+      run: |
+        cd ./src
+        go mod tidy
+        GOOS=${{ matrix.goos }} GOARCH=amd64 go build -o ./${{ matrix.goos }}/
+        cp input.ini ./${{ matrix.goos }}/
+
+    - name: Test Go
+      run: |
+        cd ./src
+        ls -R
+        go test -v
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestRelease_${{ matrix.goos }}
+        path: ./src/${{ matrix.goos }}/
+
+  release-project:
+
+    runs-on: ubuntu-latest
+    needs: build-project
+    steps:
+
+    - name: Download Artifacts
+      uses: actions/download-artifact@v3
+      id: download
+      with:
+        path: ./
+
+    - name: Echo download path
+      run: echo ${{steps.download.outputs.download-path}}
+
+    - name: Commands
+      run: |
+        ls -R
+        zip -r tool.zip .
+
+    - name: Create GitHub release
+      id: create-new-release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v0.0.${{ github.run_number }}
+        release_name: Release v0.0.${{ github.run_number }}
+
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-new-release.outputs.upload_url }}
+        asset_path: ./tool.zip
+        asset_name: Tools.zip
+        asset_content_type: application/zip
