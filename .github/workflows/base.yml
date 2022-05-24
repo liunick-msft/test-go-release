@@ -59,7 +59,7 @@ jobs:
       uses: actions/download-artifact@v3
       id: download
       with:
-        path: ./artifacts/
+        path: ./
 
     - name: Echo download path
       run: echo ${{steps.download.outputs.download-path}}
@@ -67,7 +67,7 @@ jobs:
     - name: Commands
       run: |
         ls -R
-        zip -r tool.zip ./artifacts
+        zip -r tool.zip .
 
     - name: Create GitHub release
       id: create-new-release
