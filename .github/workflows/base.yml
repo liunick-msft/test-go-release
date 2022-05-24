@@ -40,7 +40,7 @@ jobs:
     - name: Test Go
       run: |
         cd ./src
-        ls -al
+        ls -R
         go test -v
 
     - name: Upload Artifacts
@@ -63,11 +63,15 @@ jobs:
       uses: actions/download-artifact@v3
       id: download
       with:
-        name: TestRelease_${{ matrix.goos }}
+        # name: TestRelease_${{ matrix.goos }}
         path: ./${{ matrix.goos }}/
 
-    - name: 'Echo download path'
+    - name: Echo download path
       run: echo ${{steps.download.outputs.download-path}}
+
+    - name: Commands
+      run: |
+        ls -R
 
     - name: Create GitHub release
       id: create-new-release
